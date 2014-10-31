@@ -132,17 +132,32 @@ namespace N2.Persistence.MongoDB
             }
         }
 
+		class ContentConventionPack : IConventionPack
+		{
+			public IEnumerable<IConvention> Conventions
+			{
+				get 
+				{
+					return new IConvention[] 
+					{
+						new IgnoreIfNullConvention(true),
+						new IgnoreUnderscoreMemberFinderConvention()
+					};
+				}
+			}
+		}
+
+
         private void Register(IDefinitionProvider[] definitionProviders, IProxyFactory proxies)
         {
             if (isRegistered)
                 return;
             isRegistered = true;
 
-            var conventions = new ConventionProfile();
-            conventions.SetIgnoreIfNullConvention(new AlwaysIgnoreIfNullConvention());
-            conventions.SetMemberFinderConvention(new IgnoreUnderscoreMemberFinderConvention());
+			//conventions.SetIgnoreIfNullConvention(new AlwaysIgnoreIfNullConvention());
+			//conventions.SetMemberFinderConvention(new IgnoreUnderscoreMemberFinderConvention());
             
-            BsonClassMap.RegisterConventions(conventions, t => true);
+			ConventionRegistry.Register("ContentConventions", new ContentConventionPack(), t => true);
 
             BsonSerializer.RegisterSerializationProvider(new ContentSerializationProvider(this, proxies));
 
@@ -173,25 +188,25 @@ namespace N2.Persistence.MongoDB
                 cm.SetIgnoreExtraElements(true);
             });
             BsonClassMap.RegisterClassMap<Relation<ContentItem>>(cm =>
-            {
-                cm.MapProperty(r => r.ID);
-                cm.MapProperty(r => r.ValueAccessor).SetSerializer(new RelationValueAccessorSerializer<ContentItem>(this));
+                {
+                    cm.MapProperty(r => r.ID);
+                    cm.MapProperty(r => r.ValueAccessor).SetSerializer(new RelationValueAccessorSerializer<ContentItem>(this));
                 cm.SetIgnoreExtraElements(true);
-            });
+                });
             BsonClassMap.RegisterClassMap<ContentRelation>(cm =>
-            {
+                {
                 cm.SetIgnoreExtraElements(true);
-            });
+                });
             BsonClassMap.RegisterClassMap<ContentVersion>(cm =>
-            {
-                cm.AutoMap();
-                cm.MapIdProperty(cv => cv.ID).SetIdGenerator(new IntIdGenerator());
-                cm.GetMemberMap(cv => cv.Published).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
-                cm.GetMemberMap(cv => cv.Saved).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
-                cm.GetMemberMap(cv => cv.FuturePublish).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
-                cm.GetMemberMap(cv => cv.Expired).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
+                {
+                    cm.AutoMap();
+                    cm.MapIdProperty(cv => cv.ID).SetIdGenerator(new IntIdGenerator());
+                    cm.GetMemberMap(cv => cv.Published).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
+                    cm.GetMemberMap(cv => cv.Saved).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
+                    cm.GetMemberMap(cv => cv.FuturePublish).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
+                    cm.GetMemberMap(cv => cv.Expired).SetSerializationOptions(new DateTimeSerializationOptions(DateTimeKind.Local));
                 cm.SetIgnoreExtraElements(true);
-            });
+                });
             BsonClassMap.RegisterClassMap<ContentItem>(cm =>
             {
                 cm.AutoMap();
