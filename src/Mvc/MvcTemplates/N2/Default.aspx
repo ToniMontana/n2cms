@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" %>
+<%@ Import Namespace="System.IO" %>
 <%@ Register TagPrefix="edit" Namespace="N2.Edit.Web.UI.Controls" Assembly="N2.Management" %>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -13,51 +14,54 @@
 	<title>N2 Management</title>
 	<meta name="viewport" content="width=device-width">
 
-	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.JQueryJsPath) %>"></script>
-	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.JQueryUiPath) %>"></script>
-	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularJsPath) %>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.JQueryJsPath)%>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.JQueryUiPath)%>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularJsPath)%>"></script>
 	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularJsResourcePath) %>"></script>
-	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularJsRoot + "angular-route.js") %>"></script>
-	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularUiJsPath) %>"></script>
-	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularStrapJsPath) %>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularJsSanitizePath)%>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularJsRoot + "angular-route.js")%>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularUiJsPath)%>"></script>
+	<script type="text/javascript" src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularStrapJsPath)%>"></script>
 
-	<link href="<%=  N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapCssPath) %>" type="text/css" rel="stylesheet" />
-	<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapJsPath)  %>" type="text/javascript"></script>
+	<link href="<%=  N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapCssPath)%>" type="text/css" rel="stylesheet" />
+	<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapJsPath)%>" type="text/javascript"></script>
 
-	<link rel="stylesheet" href="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.IconsCssPath) %>" />
+	<link rel="stylesheet" href="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.IconsCssPath)%>" />
 
-	<link href="<%=  N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapDatePickerCssPath) %>" type="text/css" rel="stylesheet" />
-	<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapDatePickerJsPath)  %>" type="text/javascript"></script>
-	<link href="<%=  N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapTimePickerCssPath) %>" type="text/css" rel="stylesheet" />
-	<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapTimePickerJsPath)  %>" type="text/javascript"></script>
+	<link href="<%=  N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapDatePickerCssPath)%>" type="text/css" rel="stylesheet" />
+	<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapDatePickerJsPath)%>" type="text/javascript"></script>
+	<link href="<%=  N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapTimePickerCssPath)%>" type="text/css" rel="stylesheet" />
+	<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.BootstrapTimePickerJsPath)%>" type="text/javascript"></script>
 	
-
 	<link href="Resources/icons/flags.css" rel="stylesheet" />
 
-	<!--<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularStrapJsPath) %>"></script>-->
+	<!--<script src="<%= N2.Web.Url.ResolveTokens(N2.Resources.Register.AngularStrapJsPath)%>"></script>-->
 
 	<script src="Resources/js/n2.js"></script>
 	<link rel="stylesheet" href="Resources/css/n2.css">
 
-	<script src="<%= GetLocalizationPath() %>"></script>
+	<script src="<%= GetLocalizationPath()%>"></script>
 	<script src="App/Js/Services.js"></script>
 	<script src="App/Js/Controllers.js"></script>
 	<script src="App/Js/Directives.js"></script>
 
 	<asp:PlaceHolder runat="server">
-	<% foreach(var module in N2.Context.Current.Container.ResolveAll<N2.Management.Api.ManagementModuleBase>()) { %>
-	<!-- <%= module.GetType().Name %> -->
-	<% foreach(var script in module.ScriptIncludes) { %>
-	<script src="<%= N2.Web.Url.ResolveTokens(script) %>"></script>
+	<% foreach (var module in N2.Context.Current.Container.ResolveAll<N2.Management.Api.ManagementModuleBase>())
+	{ %>
+	<!-- <%= module.GetType().Name%> -->
+	<% foreach (var script in module.ScriptIncludes)
+	{ %>
+	<script src="<%= N2.Web.Url.ResolveTokens(script)%>"></script>
 	<% } %>
-	<% foreach(var style in module.StyleIncludes) { %>
-	<link href="<%= N2.Web.Url.ResolveTokens(style) %>" rel="stylesheet" />
+	<% foreach (var style in module.StyleIncludes)
+	{ %>
+	<link href="<%= N2.Web.Url.ResolveTokens(style)%>" rel="stylesheet" />
 	<% } %>
 	<% } %>
 	</asp:PlaceHolder>
+	<base href="<%= Request.Url.AbsolutePath %>" />
 </head>
 <body ng-app="n2" ng-view>
-	<%--<div id="debug-context" class="debug" ng-bind-html-unsafe="Context | pretty"></div>--%>
 </body>
 </html>
 
@@ -66,7 +70,7 @@
 	protected string GetLocalizationPath()
 	{
 		var culture = System.Threading.Thread.CurrentThread.CurrentUICulture;
-		var languagePreferenceList = new[] { culture.ToString(), culture.TwoLetterISOLanguageName };
+		var languagePreferenceList = new[] {culture.ToString(), culture.TwoLetterISOLanguageName};
 		foreach (var languageCode in languagePreferenceList)
 		{
 			var path = N2.Web.Url.ResolveTokens("{ManagementUrl}/App/i18n/" + languageCode + ".js.ashx");
@@ -75,4 +79,22 @@
 		}
 		return "App/i18n/en.js.ashx";
 	}
+
+	protected override void OnLoad(EventArgs e)
+	{
+		var path = N2.Web.Url.ResolveTokens("{ManagementUrl}/web.config");
+		if (System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(path))
+		{
+			using (var stream = System.Web.Hosting.HostingEnvironment.VirtualPathProvider.GetFile(path).Open())
+			using (var reader = new StreamReader(stream))
+			{
+				var webConfig = reader.ReadToEnd();
+				if (!webConfig.Contains("ApiHandlerDispatcher"))
+				{
+					throw new ConfigurationErrorsException("Missing reference to ApiHandlerDispatcher, the N2.Management web.config file is invalid!");
+				}
+			}
+		}
+	}
+
 </script>

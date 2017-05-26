@@ -46,10 +46,11 @@
     var selected = '<%= Selection.SelectedItem.Path %>';
 	var refreshFrames = function(){
 		<%= Page.GetRefreshFramesScript(Selection.SelectedItem, N2.Edit.ToolbarArea.Navigation, true) %>;
+		window.location.reload();
 	};
     
 	$(function(){
-		n2.FileUpload(maxFileSize, ticket, selected, refreshFrames);
+		n2.FileUpload(maxFileSize, ticket, selected, refreshFrames, ".fileupload-content");
 	});
 
 </script>
